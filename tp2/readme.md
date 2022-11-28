@@ -536,13 +536,13 @@ LISTEN 0      10              [::]:13923         [::]:*    users:(("nc",pid=1023
 
 ```
 [mat@tp2-linux ~]$ sudo journalctl -xe -u tp2_nc | grep "test"
-░░ Nov 26 15:26:22 TP2 nc[1023]: test
+░░ Nov 26 15:26:22 tp2 nc[1023]: test
 #Log de démarrage du service
 ```
 
 ```
-[mat@tp2-linux ~]$ sudo journalctl -xe -u tp2_nc | grep dead
-░░ The unit tp2_nc.service has successfully entered the 'dead' state.
+[mat@tp2-linux ~]$ sudo journalctl -xe -u tp2_nc | grep exit
+░░ Nov 26 15:28:41 tp2 systemd[1]: tp2_nc.service: Failed with result 'exit-code'.
 #Log de fin de service
 ```
 
