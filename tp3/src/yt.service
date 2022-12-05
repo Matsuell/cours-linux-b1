@@ -1,0 +1,9 @@
+[Unit]
+Description=Dl des vidéos ytb.
+
+[Service]
+ExecStart=/srv/yt/yt-v2.sh
+User=mat
+
+[Install]
+WantedBy=multi-user.target
