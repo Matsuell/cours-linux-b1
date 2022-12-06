@@ -3,13 +3,13 @@
 🌞 **Partitionner le disque à l'aide de LVM**
 
 ```
-[mat@storage-tp4-linux ~]$ sudo pvcreate /dev/sdb
+[mat@storage ~]$ sudo pvcreate /dev/sdb
 [sudo] password for mat:
   Physical volume "/dev/sdb" successfully created.
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ sudo pvdisplay
+[mat@storage ~]$ sudo pvdisplay
 #On vérifie que le Pv soit bien créé.
   Devices file sys_wwid t10.ATA_____VBOX_HARDDISK___________________________VBcd82f4d5-715af34e_ PVID qdYJvsqctgLAvctEN1HCs24erJwDQ5Mk last seen on /dev/sda2 not found.
   "/dev/sdb" is a new physical volume of "2.00 GiB"
@@ -26,13 +26,13 @@
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ sudo vgcreate storage /dev/sdb
+[mat@storage ~]$ sudo vgcreate storage /dev/sdb
 #On créé un groupe de volume
   Volume group "storage" successfully created
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ sudo vgs
+[mat@storage ~]$ sudo vgs
 #On vérifie que le volume soit bien créé.
   Devices file sys_wwid t10.ATA_____VBOX_HARDDISK___________________________VBcd82f4d5-715af34e_ PVID qdYJvsqctgLAvctEN1HCs24erJwDQ5Mk last seen on /dev/sda2 not found.
   VG      #PV #LV #SN Attr   VSize  VFree
@@ -40,13 +40,13 @@
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ sudo lvcreate -l +100%FREE storage -n storage-tp4
+[mat@storage ~]$ sudo lvcreate -l +100%FREE storage -n storage-tp4
 #On créé un Logical Volume qui contient tout ce que storage contient.
   Logical volume "storage-tp4" created.
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ sudo lvdisplay
+[mat@storage ~]$ sudo lvdisplay
 #On vérifie que le LV soit bien créé.
   Devices file sys_wwid t10.ATA_____VBOX_HARDDISK___________________________VBcd82f4d5-715af34e_ PVID qdYJvsqctgLAvctEN1HCs24erJwDQ5Mk last seen on /dev/sda2 not found.
   --- Logical volume ---
@@ -70,7 +70,7 @@
 🌞 **Formater la partition**
 
 ```
-[mat@storage-tp4-linux ~]$ sudo mkfs -t ext4 /dev/storage/storage-tp4
+[mat@storage ~]$ sudo mkfs -t ext4 /dev/storage/storage-tp4
 #On formate la nouvelle partition que l'on vient de créer storage-tp4
 mke2fs 1.46.5 (30-Dec-2021)
 Creating filesystem with 523264 4k blocks and 130816 inodes
@@ -87,34 +87,34 @@ Writing superblocks and filesystem accounting information: done
 🌞 **Monter la partition**
 
 ```
-[mat@storage-tp4-linux ~]$ sudo mkdir /storage
+[mat@storage ~]$ sudo mkdir /storage
 #On créé le dossier qui stockera les données de la partition.
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ sudo mount /dev/storage/storage-tp4 /storage/
+[mat@storage ~]$ sudo mount /dev/storage/storage-tp4 /storage/
 #On monte la partition dans le dossier.
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ df -h | grep storage
+[mat@storage ~]$ df -h | grep storage
 #On vérifie que la partition soit créée.
 /dev/mapper/storage-storage--tp4  2.0G   24K  1.9G   1% /storage
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ sudo nano /etc/fstab
+[mat@storage ~]$ sudo nano /etc/fstab
 #On définit un point de montage automatique.
 /dev/storage/storage-tp4 /mnt/storage-tp4 ext4 defaults 0 0
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ sudo umount /storage/
+[mat@storage ~]$ sudo umount /storage/
 On démonta la partition
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ sudo mount -av
+[mat@storage ~]$ sudo mount -av
 /                        : ignored
 /boot                    : already mounted
 none                     : ignored
@@ -132,43 +132,43 @@ mount: /storage does not contain SELinux labels.
 🌞 **Donnez les commandes réalisées sur le serveur NFS `storage.tp4.linux`**
 
 ```
-[mat@storage-tp4-linux ~]$ sudo dnf install nfs-utils -y
+[mat@storage ~]$ sudo dnf install nfs-utils -y
 #On installe le serveur nfs
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ sudo nano /etc/exports
+[mat@storage ~]$ sudo nano /etc/exports
 #On modifie la liste des dossiers à exporter en rajoutant la ligne.
 
 /storage 10.4.1.84(rw,sync,no_root_squash,no_subtree_check)
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ cat /etc/exports
+[mat@storage ~]$ cat /etc/exports
 /storage 10.4.1.84(rw,sync,no_root_squash,no_subtree_check)
 ```
 
 ```
 #On configure le serveur pour qu'il s'allume dès le démarrage de la machine et on le lance directement.
-[mat@storage-tp4-linux ~]$ sudo systemctl enable nfs-server
+[mat@storage ~]$ sudo systemctl enable nfs-server
 Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service → /usr/lib/systemd/system/nfs-server.service.
-[mat@storage-tp4-linux ~]$ sudo systemctl start nfs-server
+[mat@storage ~]$ sudo systemctl start nfs-server
 ```
 
 ```
 #On autorise le service à passer la pare-feu.
-[mat@storage-tp4-linux ~]$ sudo firewall-cmd --permanent --add-service=nfs
+[mat@storage ~]$ sudo firewall-cmd --permanent --add-service=nfs
 success
-[mat@storage-tp4-linux ~]$ sudo firewall-cmd --permanent --add-service=mountd
+[mat@storage ~]$ sudo firewall-cmd --permanent --add-service=mountd
 success
-[mat@storage-tp4-linux ~]$ sudo firewall-cmd --permanent --add-service=rpc-bind
+[mat@storage ~]$ sudo firewall-cmd --permanent --add-service=rpc-bind
 success
-[mat@storage-tp4-linux ~]$ sudo firewall-cmd --reload
+[mat@storage ~]$ sudo firewall-cmd --reload
 success
 ```
 
 ```
-[mat@storage-tp4-linux ~]$ ls /storage/site_web_1/
+[mat@storage ~]$ ls /storage/site_web_1/
 #On vérifie que le fichier créé sur le serveur web soit bien dans le serveur de stockage.
 test.txt
 ```
