@@ -419,9 +419,16 @@ index.html
 
 🌞 **Exploration de la base de données**
 
-- connectez vous en ligne de commande à la base de données après l'installation terminée
-- déterminer combien de tables ont été crées par NextCloud lors de la finalisation de l'installation
-  - ***bonus points*** si la réponse à cette question est automatiquement donnée par une requête SQL
+```
+mysql> SELECT COUNT(*) FROM information_schema.tables WHERE table_type = 'BASE TABLE';
+
++----------+
+| count(*) |
++----------+
+|       95 |
++----------+
+1 row in set (0.00sec)
+```
 
 
 # Partie 4: Automatiser la résolution du TP
