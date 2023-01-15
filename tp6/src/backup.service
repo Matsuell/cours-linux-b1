@@ -1,0 +1,11 @@
+[Unit]
+Description=Ce petit service permet de faire des backup du dossier nextcloud
+
+
+
+[Service]
+Type=oneshot
+ExecStart=/srv/tp6_backup.sh
+User=backup
+
+
